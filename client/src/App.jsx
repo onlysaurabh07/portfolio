@@ -12,7 +12,12 @@ import {
   Send, 
   ChevronRight,
   Database,
-  Monitor
+  Monitor,
+  GraduationCap,
+  FileText,
+  Linkedin,
+  Twitter,
+  Instagram
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -38,7 +43,9 @@ function App() {
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>
             <li><a href="#skills">Skills</a></li>
+            <li><a href="#education">Education</a></li>
             <li><a href="#projects">Projects</a></li>
+            <li><a href="#resume">Resume</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
@@ -117,6 +124,26 @@ function App() {
           </div>
         </section>
 
+        <section id="education" className="container">
+          <motion.h2 {...fadeInUp}><GraduationCap className="section-icon" /> Education</motion.h2>
+          <motion.div 
+            className="glass education-card"
+            {...fadeInUp}
+            whileHover={{ scale: 1.01 }}
+          >
+            <div className="edu-header">
+              <div className="edu-icon-bg">
+                <GraduationCap size={32} />
+              </div>
+              <div className="edu-info">
+                <h3>Bachelor of Technology in Computer Science</h3>
+                <p className="school">BBD University, Lucknow</p>
+                <p className="duration">2022 — 2026</p>
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
         <section id="projects" className="container">
           <motion.h2 {...fadeInUp}><Briefcase className="section-icon" /> Featured Projects</motion.h2>
           <div className="projects-grid">
@@ -149,6 +176,20 @@ function App() {
           </div>
         </section>
 
+        <section id="resume" className="container">
+          <motion.h2 {...fadeInUp}><FileText className="section-icon" /> Resume</motion.h2>
+          <motion.div 
+            className="glass resume-card"
+            {...fadeInUp}
+          >
+            <p>Download my professional resume for complete career details, certifications, and technical proficiencies.</p>
+            <div className="resume-btns">
+               <button className="btn-primary"><FileText size={18} /> View Resume</button>
+               <button className="btn-outline"><ExternalLink size={18} /> Download PDF</button>
+            </div>
+          </motion.div>
+        </section>
+
         <section id="contact" className="container">
           <motion.h2 {...fadeInUp}><Mail className="section-icon" /> Get In Touch</motion.h2>
           <motion.div 
@@ -174,8 +215,15 @@ function App() {
       </main>
 
       <footer className="glass">
-        <div className="container">
-          <p>&copy; 2026 Saurabh Singh. Built with React & Lucide.</p>
+        <div className="container footer-content">
+          <div className="footer-logo">Saurabh<span>.</span></div>
+          <div className="social-links">
+            <a href="#"><Linkedin size={20} /></a>
+            <a href="#"><Twitter size={20} /></a>
+            <a href="#"><Github size={20} /></a>
+            <a href="#"><Instagram size={20} /></a>
+          </div>
+          <p>&copy; 2026 Saurabh Singh. Built with React, Framer Motion & Lucide.</p>
         </div>
       </footer>
     </div>

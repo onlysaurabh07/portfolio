@@ -192,6 +192,65 @@ header ul li a:hover {
   cursor: pointer;
 }
 
+.education-card {
+  padding: 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.edu-header {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.edu-icon-bg {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  width: 64px;
+  height: 64px;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.edu-info h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.edu-info .school {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.edu-info .duration {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.resume-card {
+  padding: 4rem;
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.resume-card p {
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  font-size: 1.1rem;
+}
+
+.resume-btns {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
 .contact-container {
   max-width: 700px;
   margin: 0 auto;
@@ -204,12 +263,54 @@ header ul li a:hover {
 }
 
 footer {
-  padding: 3rem 0;
+  padding: 4rem 0;
   text-align: center;
   margin-top: 8rem;
   border-radius: 0;
   color: var(--text-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.footer-logo {
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.footer-logo span {
+  color: var(--primary-color);
+}
+
+.social-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.social-links a {
+  background: var(--bg-card);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+  color: var(--text-main);
+}
+
+.social-links a:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 210, 255, 0.2);
 }
 
 @media (max-width: 1024px) {
