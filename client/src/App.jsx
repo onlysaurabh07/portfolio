@@ -28,6 +28,28 @@ const fadeInUp = {
 };
 
 function App() {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (response.ok) {
+        alert('Message sent successfully!');
+        e.target.reset();
+      } else {
+        alert('Failed to send message. Ensure your backend and MongoDB are connected.');
+      }
+    } catch (err) {
+      alert('Connecting to backend... Make sure your server is running on port 5000.');
+    }
+  };
+
   return (
     <div className="App">
       <header className="glass">
@@ -196,15 +218,15 @@ function App() {
             className="contact-container glass"
             {...fadeInUp}
           >
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <input type="text" placeholder="Your Name" required />
+                <input type="text" name="name" placeholder="Your Name" required />
               </div>
               <div className="form-group">
-                <input type="email" placeholder="Your Email" required />
+                <input type="email" name="email" placeholder="Your Email" required />
               </div>
               <div className="form-group">
-                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
               </div>
               <button type="submit" className="btn-primary">
                 Send Message <Send size={18} />
