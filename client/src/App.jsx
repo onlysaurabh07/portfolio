@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import profilePic from './assets/profile_pic.jpeg';
+import resumeFile from './assets/saurabh.resume.pdf';
 import { motion } from 'framer-motion';
 import { 
   Code, 
@@ -119,9 +120,37 @@ function App() {
             <motion.h2 {...fadeInUp}><Code className="section-icon" /> Technical Skills</motion.h2>
             <div className="skills-grid">
               {[
-                { title: 'Programming', icon: <Code />, skills: ['Python', 'SQL', 'JavaScript', 'PHP'] },
-                { title: 'Web Development', icon: <Monitor />, skills: ['React.js', 'Node.js', 'Express.js', 'HTML/CSS'] },
-                { title: 'Data Analysis', icon: <Database />, skills: ['Pandas/NumPy', 'Matplotlib', 'Tableau', 'Excel'] }
+                { 
+                  title: 'Programming', 
+                  icon: <Code />, 
+                  skills: [
+                    { name: 'Python', icon: 'https://skillicons.dev/icons?i=python' },
+                    { name: 'SQL', icon: 'https://skillicons.dev/icons?i=mysql' },
+                    { name: 'JavaScript', icon: 'https://skillicons.dev/icons?i=js' },
+                    { name: 'PHP', icon: 'https://skillicons.dev/icons?i=php' }
+                  ] 
+                },
+                { 
+                  title: 'Web Development', 
+                  icon: <Monitor />, 
+                  skills: [
+                    { name: 'React.js', icon: 'https://skillicons.dev/icons?i=react' },
+                    { name: 'Node.js', icon: 'https://skillicons.dev/icons?i=nodejs' },
+                    { name: 'Express.js', icon: 'https://skillicons.dev/icons?i=express' },
+                    { name: 'HTML/CSS', icon: 'https://skillicons.dev/icons?i=html,css' }
+                  ] 
+                },
+                { 
+                  title: 'Data Analysis', 
+                  icon: <Database />, 
+                  skills: [
+                    { name: 'Pandas', icon: 'https://api.iconify.design/simple-icons:pandas.svg?color=%23ffffff' },
+                    { name: 'NumPy', icon: 'https://api.iconify.design/simple-icons:numpy.svg?color=%23ffffff' },
+                    { name: 'Matplotlib', icon: 'https://api.iconify.design/devicon-plain:matplotlib.svg?color=%23ffffff' },
+                    { name: 'Tableau', icon: 'https://api.iconify.design/simple-icons:tableau.svg?color=%23ffffff' },
+                    { name: 'Excel', icon: 'https://api.iconify.design/simple-icons:microsoftexcel.svg?color=%23ffffff' }
+                  ] 
+                }
               ].map((group, i) => (
                 <motion.div 
                   key={i}
@@ -137,7 +166,10 @@ function App() {
                   </div>
                   <ul>
                     {group.skills.map((s, j) => (
-                      <li key={j}><ChevronRight size={14} /> {s}</li>
+                      <li key={j}>
+                        <img src={s.icon} alt={s.name} className="skill-tech-icon" />
+                        <span>{s.name}</span>
+                      </li>
                     ))}
                   </ul>
                 </motion.div>
@@ -206,8 +238,12 @@ function App() {
           >
             <p>Download my professional resume for complete career details, certifications, and technical proficiencies.</p>
             <div className="resume-btns">
-               <button className="btn-primary"><FileText size={18} /> View Resume</button>
-               <button className="btn-outline"><ExternalLink size={18} /> Download PDF</button>
+               <a href={resumeFile} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                 <FileText size={18} /> View Resume
+               </a>
+               <a href={resumeFile} download="Saurabh_Singh_Resume.pdf" className="btn-outline">
+                 <ExternalLink size={18} /> Download PDF
+               </a>
             </div>
           </motion.div>
         </section>

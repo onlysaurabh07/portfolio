@@ -148,8 +148,29 @@ header ul li a:hover {
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
   color: var(--text-muted);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  transition: var(--transition);
+}
+
+.skill-card ul li:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  transform: translateX(5px);
+}
+
+.skill-tech-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: transform 0.3s ease;
+}
+
+.skill-card ul li:hover .skill-tech-icon {
+  transform: scale(1.2);
 }
 
 .projects-grid {
