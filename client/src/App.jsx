@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import profilePic from './assets/profile_pic.jpeg';
+import logoImg from './assets/logo.jpeg';
 import resumeFile from './assets/saurabh.resume.pdf';
-import { motion } from 'framer-motion';
+import ssrJpg from './assets/ssr.jpg'; // Import the image
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Code, 
   User, 
@@ -18,7 +20,9 @@ import {
   FileText,
   Linkedin,
   Twitter,
-  Instagram
+  Instagram,
+  Menu,
+  X
 } from 'lucide-react';
 
 const fadeInUp = {
@@ -28,7 +32,57 @@ const fadeInUp = {
   transition: { duration: 0.6 }
 };
 
+const Typewriter = ({ texts, speed = 100, waitTime = 2000 }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [index, setIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+
+  useEffect(() => {
+    const currentFullText = texts[textIndex];
+    let timer;
+
+    if (isDeleting) {
+      timer = setTimeout(() => {
+        setDisplayText(currentFullText.substring(0, displayText.length - 1));
+      }, speed / 2);
+    } else {
+      timer = setTimeout(() => {
+        setDisplayText(currentFullText.substring(0, displayText.length + 1));
+      }, speed);
+    }
+
+    if (!isDeleting && displayText === currentFullText) {
+      timer = setTimeout(() => setIsDeleting(true), waitTime);
+    } else if (isDeleting && displayText === '') {
+      setIsDeleting(false);
+      setTextIndex((prev) => (prev + 1) % texts.length);
+    }
+
+    return () => clearTimeout(timer);
+  }, [displayText, isDeleting, textIndex, texts, speed, waitTime]);
+
+  return (
+    <span className="typewriter">
+      {displayText}
+      <span className="cursor">|</span>
+    </span>
+  );
+};
+
+const navLinks = [
+  { href: '#home', label: 'Home' },
+  { href: '#about', label: 'About' },
+  { href: '#skills', label: 'Skills' },
+  { href: '#education', label: 'Education' },
+  { href: '#projects', label: 'Projects' },
+  { href: '#resume', label: 'Resume' },
+  { href: '#contact', label: 'Contact' },
+];
+
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
@@ -51,6 +105,12 @@ function App() {
     }
   };
 
+  const roles = [
+    "Python Developer",
+    "Data Analyst",
+    "Full Stack Developer"
+  ];
+
   return (
     <div className="App">
       <header className="glass">
@@ -59,19 +119,48 @@ function App() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="logo"
-          >
-            Saurabh<span>.</span>
+          ><img src={logoImg} alt="Saurabh Singh Logo" className="logo-img" />
           </motion.div>
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#education">Education</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#resume">Resume</a></li>
-            <li><a href="#contact">Contact</a></li>
+
+          {/* Desktop nav */}
+          <ul className="desktop-nav">
+            {navLinks.map(link => (
+              <li key={link.href}><a href={link.href}>{link.label}</a></li>
+            ))}
           </ul>
+
+          {/* Hamburger button (mobile only) */}
+          <button
+            className="hamburger"
+            onClick={() => setMenuOpen(prev => !prev)}
+            aria-label="Toggle navigation"
+          >
+            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </nav>
+
+        {/* Mobile drawer */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              className="mobile-menu glass"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.25 }}
+            >
+              <ul>
+                {navLinks.map(link => (
+                  <li key={link.href}>
+                    <a href={link.href} onClick={() => setMenuOpen(false)}>
+                      <ChevronRight size={16} />{link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <main>
@@ -83,16 +172,45 @@ function App() {
               transition={{ duration: 0.8 }}
               className="hero-content"
             >
-              <h1>Saurabh Singh</h1>
-              <h3>Python Developer | Data Analyst | Full Stack Developer</h3>
-              <p>Crafting elegant solutions with code and data.</p>
+              <motion.h1
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                Saurabh Singh
+              </motion.h1>
+              <motion.div 
+                className="typewriter-container"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <Typewriter texts={roles} />
+              </motion.div>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+              >
+                Crafting elegant solutions with code and data.
+              </motion.p>
               <div className="hero-btns">
-                <a href="#projects" className="btn-primary">
+                <motion.a 
+                  href="#projects" 
+                  className="btn-primary"
+                  whileHover={{ scale: 1.05, translateY: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   View Projects <ExternalLink size={18} />
-                </a>
-                <a href="#contact" className="btn-outline">
+                </motion.a>
+                <motion.a 
+                  href="#contact" 
+                  className="btn-outline"
+                  whileHover={{ scale: 1.05, translateY: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                >
                   Contact Me <Mail size={18} />
-                </a>
+                </motion.a>
               </div>
             </motion.div>
           </div>
@@ -274,12 +392,12 @@ function App() {
 
       <footer className="glass">
         <div className="container footer-content">
-          <div className="footer-logo">Saurabh<span>.</span></div>
+          <div className="footer-logo"><img src={logoImg} alt="Saurabh Singh Logo" className="footer-logo-img" /></div>
           <div className="social-links">
-            <a href="#"><Linkedin size={20} /></a>
-            <a href="#"><Twitter size={20} /></a>
-            <a href="#"><Github size={20} /></a>
-            <a href="#"><Instagram size={20} /></a>
+            <a href="https://www.linkedin.com/in/saurabh-kumar-singh-96a956374" target="_blank" rel="noopener noreferrer"><Linkedin size={20} /></a>
+            <a href="https://x.com/issr69280" target="_blank" rel="noopener noreferrer"><Twitter size={20} /></a>
+            <a href="https://github.com/onlysaurabh07" target="_blank" rel="noopener noreferrer"><Github size={20} /></a>
+            <a href="https://www.instagram.com/only.saurabh_?igsh" target="_blank" rel="noopener noreferrer"><Instagram size={20} /></a>
           </div>
           <p>&copy; 2026 Saurabh Singh. Built with React, Framer Motion & Lucide.</p>
         </div>
