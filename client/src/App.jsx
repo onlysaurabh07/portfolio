@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import emailjs from '@emailjs/browser';
 import './App.css';
 import profilePic from './assets/profile_pic.jpeg';
 import logoImg from './assets/logo.jpeg';
@@ -82,27 +83,25 @@ const navLinks = [
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const form = useRef();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData.entries());
-    
-    try {
-      const response = await fetch('http://localhost:5000/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (response.ok) {
-        alert('Message sent successfully!');
-        e.target.reset();
-      } else {
-        alert('Failed to send message. Ensure your backend and MongoDB are connected.');
-      }
-    } catch (err) {
-      alert('Connecting to backend... Make sure your server is running on port 5000.');
-    }
+
+    emailjs.sendForm(
+      "service_ge7qy86",      // ✅ your service ID
+      "template_uemj7sc",     // ✅ your template ID
+      form.current,
+      "AXUY5CR0Kj96E7-bU"     // ✅ your public key
+    )
+    .then(() => {
+      alert("Message sent successfully ✅");
+      e.target.reset();
+    })
+    .catch((error) => {
+      console.log("ERROR:", error);
+      alert("Failed ❌. Please try again later.");
+    });
   };
 
   const roles = [
@@ -372,7 +371,7 @@ function App() {
             className="contact-container glass"
             {...fadeInUp}
           >
-            <form onSubmit={handleSubmit}>
+            <form ref={form} onSubmit={handleSubmit}>
               <div className="form-group">
                 <input type="text" name="name" placeholder="Your Name" required />
               </div>
