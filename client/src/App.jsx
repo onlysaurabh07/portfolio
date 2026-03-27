@@ -4,7 +4,7 @@ import './App.css';
 import profilePic from './assets/profile_pic.jpeg';
 import logoImg from './assets/logo.jpeg';
 import resumeFile from './assets/SAURABH SINGH.pdf';
-import ssrJpg from './assets/ssr.jpg'; // Import the image
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Code, 
@@ -83,25 +83,68 @@ const navLinks = [
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const form = useRef();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const API_URL = 'http://localhost:5000/api';
 
-    emailjs.sendForm(
-      "service_ge7qy86",      // ✅ your service ID
-      "template_uemj7sc",     // ✅ your template ID
-      form.current,
-      "AXUY5CR0Kj96E7-bU"     // ✅ your public key
-    )
-    .then(() => {
-      alert("Message sent successfully ✅");
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch(`${API_URL}/projects`);
+        if (!response.ok) throw new Error('API unstable');
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setProjects(data);
+        } else {
+          throw new Error('No projects found in database');
+        }
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        // Fallback to initial empty array, map will handle hardcoded ones
+        setProjects([
+          { title: 'Emotion Recognition', description: 'ML project detecting human emotions via facial expressions.', technologies: ['Python', 'ML'], icon: '😊' },
+          { title: 'Diwali Sales Analysis', description: 'EDA on sales data to understand customer behavior.', technologies: ['Python', 'Pandas'], icon: '📈' },
+          { title: 'Gym Website', description: 'Responsive website for a gym client.', technologies: ['React', 'CSS'], icon: '💪' }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form.current);
+    const data = Object.fromEntries(formData.entries());
+
+    try {
+      // 1. Send to Backend Database (as per PRD)
+      const backendResponse = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!backendResponse.ok) throw new Error('Backend submission failed');
+
+      // 2. Send via EmailJS (client preference)
+      await emailjs.sendForm(
+        "service_ge7qy86",      // service ID
+        "template_uemj7sc",     // template ID
+        form.current,
+        "AXUY5CR0Kj96E7-bU"     // public key
+      );
+
+      alert("Message sent successfully and saved to database! ✅");
       e.target.reset();
-    })
-    .catch((error) => {
-      console.log("ERROR:", error);
-      alert("Failed ❌. Please try again later.");
-    });
+    } catch (error) {
+      console.error('ERROR:', error);
+      alert("Failed to send message properly ❌. Please check console for details.");
+    }
   };
 
   const roles = [
@@ -318,11 +361,7 @@ function App() {
         <section id="projects" className="container">
           <motion.h2 {...fadeInUp}><Briefcase className="section-icon" /> Featured Projects</motion.h2>
           <div className="projects-grid">
-            {[
-              { title: 'Emotion Recognition', desc: 'ML project detecting human emotions via facial expressions.', tags: ['Python', 'ML'], icon: '😊' },
-              { title: 'Diwali Sales Analysis', desc: 'EDA on sales data to understand customer behavior.', tags: ['Python', 'Pandas'], icon: '📈' },
-              { title: 'Gym Website', desc: 'Responsive website for a gym client.', tags: ['React', 'CSS'], icon: '💪' }
-            ].map((p, i) => (
+            {projects.map((p, i) => (
               <motion.div 
                 key={i}
                 className="project-card glass"
@@ -332,11 +371,11 @@ function App() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="project-icon">{p.icon}</div>
+                <div className="project-icon">{p.icon || '🚀'}</div>
                 <h3>{p.title}</h3>
-                <p>{p.desc}</p>
+                <p>{p.description}</p>
                 <div className="tech-tags">
-                  {p.tags.map((t, j) => <span key={j}>{t}</span>)}
+                  {p.technologies?.map((t, j) => <span key={j}>{t}</span>)}
                 </div>
                 <div className="project-links">
                   <ExternalLink size={20} />

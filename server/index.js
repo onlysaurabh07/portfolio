@@ -2,6 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
+const dns = require('dns');
+
+// Fix for SRV record resolution issues on some local DNS servers
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,8 +19,20 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('MongoDB connected successfully'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => {
+        console.log('✅ MongoDB connected successfully');
+        console.log('   Host:', mongoose.connection.host);
+    })
+    .catch(err => {
+        console.error('❌ MongoDB connection error details:');
+        console.error('   Code:', err.code);
+        console.error('   Error Name:', err.name);
+        console.error('   Message:', err.message);
+        if (err.code === 'ECONNREFUSED' || err.message.includes('SRV')) {
+            console.warn('⚠️  TIP: This error often occurs when SRV records (mongodb+srv) are blocked by the network.');
+            console.warn('   Consider using the "Standard Connection String" (non-srv) from MongoDB Atlas.');
+        }
+    });
 
 // Routes
 app.get('/', (req, res) => {
