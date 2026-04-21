@@ -105,9 +105,30 @@ function App() {
         console.error('Error fetching projects:', error);
         // Fallback to initial empty array, map will handle hardcoded ones
         setProjects([
-          { title: 'Emotion Recognition', description: 'ML project detecting human emotions via facial expressions.', technologies: ['Python', 'ML'], icon: '😊' },
-          { title: 'Diwali Sales Analysis', description: 'EDA on sales data to understand customer behavior.', technologies: ['Python', 'Pandas'], icon: '📈' },
-          { title: 'Gym Website', description: 'Responsive website for a gym client.', technologies: ['React', 'CSS'], icon: '💪' }
+          { 
+            title: 'Emotion Recognition', 
+            description: 'ML project detecting human emotions via facial expressions.', 
+            technologies: ['Python', 'ML'], 
+            icon: '😊',
+            github_link: 'https://github.com/onlysaurabh07',
+            demo_link: '' 
+          },
+          { 
+            title: 'Skill Gap Analyzer', 
+            description: 'AI-powered platform analyzing resume-to-job match and providing roadmaps.', 
+            technologies: ['React', 'Node.js', 'OpenAI'], 
+            icon: '🔍',
+            github_link: 'https://github.com/onlysaurabh07/SkillGapAI',
+            demo_link: 'https://skill-analyzer-tau.vercel.app/' 
+          },
+          { 
+            title: 'Gym Website', 
+            description: 'Responsive fitness platform with membership plans and service details.', 
+            technologies: ['React', 'CSS'], 
+            icon: '💪',
+            github_link: 'https://github.com/onlysaurabh07',
+            demo_link: 'https://brothers-gym-five.vercel.app/' 
+          }
         ]);
       } finally {
         setLoading(false);
@@ -397,8 +418,16 @@ function App() {
                   {p.technologies?.map((t, j) => <span key={j}>{t}</span>)}
                 </div>
                 <div className="project-links">
-                  <ExternalLink size={20} />
-                  <Github size={20} />
+                  {p.demo_link && (
+                    <a href={p.demo_link} target="_blank" rel="noopener noreferrer" title="Live Demo">
+                      <ExternalLink size={20} />
+                    </a>
+                  )}
+                  {p.github_link && (
+                    <a href={p.github_link} target="_blank" rel="noopener noreferrer" title="GitHub Repository">
+                      <Github size={20} />
+                    </a>
+                  )}
                 </div>
               </motion.div>
             ))}
