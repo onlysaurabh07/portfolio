@@ -87,7 +87,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const form = useRef();
 
-  const API_URL = 'http://localhost:5000/api';
+  // Use environment variable for production URL, fallback to localhost for development
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -121,29 +122,47 @@ function App() {
     const formData = new FormData(form.current);
     const data = Object.fromEntries(formData.entries());
 
+    let backendSuccess = false;
+    let emailSuccess = false;
+
     try {
-      // 1. Send to Backend Database (as per PRD)
-      const backendResponse = await fetch(`${API_URL}/contact`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+      // 1. Attempt to send to Backend Database
+      try {
+        const backendResponse = await fetch(`${API_URL}/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (backendResponse.ok) {
+          backendSuccess = true;
+        }
+      } catch (err) {
+        console.warn('Backend submission failed, falling back to EmailJS:', err);
+      }
 
-      if (!backendResponse.ok) throw new Error('Backend submission failed');
+      // 2. Always attempt to send via EmailJS (client preference & reliability)
+      try {
+        await emailjs.sendForm(
+          "service_ge7qy86",      // service ID
+          "template_uemj7sc",     // template ID
+          form.current,
+          "AXUY5CR0Kj96E7-bU"     // public key
+        );
+        emailSuccess = true;
+      } catch (err) {
+        console.error('EmailJS submission failed:', err);
+      }
 
-      // 2. Send via EmailJS (client preference)
-      await emailjs.sendForm(
-        "service_ge7qy86",      // service ID
-        "template_uemj7sc",     // template ID
-        form.current,
-        "AXUY5CR0Kj96E7-bU"     // public key
-      );
+      if (emailSuccess || backendSuccess) {
+        alert(`Message sent successfully! ${!backendSuccess ? '(Saved to email notification)' : '✅'}`);
+        e.target.reset();
+      } else {
+        throw new Error('Both backend and EmailJS failed');
+      }
 
-      alert("Message sent successfully and saved to database! ✅");
-      e.target.reset();
     } catch (error) {
-      console.error('ERROR:', error);
-      alert("Failed to send message properly ❌. Please check console for details.");
+      console.error('CRITICAL ERROR:', error);
+      alert("Failed to send message properly ❌. Please check your internet connection or try again later.");
     }
   };
 
