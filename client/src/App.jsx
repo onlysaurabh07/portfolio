@@ -3,7 +3,7 @@ import emailjs from '@emailjs/browser';
 import './App.css';
 import profilePic from './assets/profile_pic.jpeg';
 import logoImg from './assets/logo.jpeg';
-import resumeFile from './assets/SAURABH SINGH.pdf';
+import resumeFile from './assets/SAURABH SINGH-gNpvyhI8.pdf';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
